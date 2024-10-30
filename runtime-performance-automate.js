@@ -23,41 +23,37 @@ const urls = [
 	},
 ];
 
-const calculateSizeHTML = async (url, name) => {
+const calculateRuntimePerformance = async (url, name) => {
 	const reportsDir = path.join(
 		__dirname,
-		'reports-document-size',
+		'reports-runtime-performance',
 		IS_CLIENT === 'true' ? 'client-side' : 'server-side',
-		`${name}.txt`
+		`${name}.json`
 	);
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 
-	// Intercept network requests
-	await page.setRequestInterception(true);
-	page.on('request', (request) => {
-		request.continue();
-	});
+	await page.goto(url);
 
-	// Listen for responses
-	page.on('response', async (response) => {
-		const url = response.url();
-		const contentType = response.headers()['content-type'];
+	const gitMetrics = await page.metrics();
 
-		// Check if the response is HTML
-		if (contentType && contentType.includes('text/html')) {
-			const html = await response.text();
-			const htmlSize = Buffer.byteLength(html, 'utf8'); // Get size in bytes
-			console.log(`HTML Document Size for ${url}: ${htmlSize} bytes`);
-			fs.appendFileSync(reportsDir, htmlSize.toString() + '\n', 'utf8');
+	let reports = [];
+
+	// Check if the file exists
+	if (fs.existsSync(reportsDir)) {
+		// Read the existing file
+		const fileContent = fs.readFileSync(reportsDir, 'utf8');
+		try {
+			// Parse the existing content
+			reports = JSON.parse(fileContent);
+		} catch (err) {
+			console.error('Error parsing JSON:', err);
 		}
-	});
+	}
 
-	// Navigate to the desired URL
-	await page.goto(url, {
-		waitUntil: 'load', // Wait until the load event fires
-	});
+	reports.push(gitMetrics);
 
+	fs.writeFileSync(reportsDir, JSON.stringify(reports, null, 2), 'utf8');
 	await browser.close();
 };
 
@@ -65,7 +61,7 @@ async function main() {
 	// Create reports directory if it doesn't exist
 	const reportsDir = path.join(
 		__dirname,
-		'reports-document-size',
+		'reports-runtime-performance',
 		IS_CLIENT === 'true' ? 'client-side' : 'server-side'
 	);
 	if (!fs.existsSync(reportsDir)) {
@@ -74,9 +70,9 @@ async function main() {
 
 	// Run Lighthouse for each URL 30 times
 	for (let i = 0; i < 30; i++) {
-		console.log(`Calculate Size Document ${i + 1}...`);
+		console.log(`Measure runtime performance page ${i + 1}...`);
 		for (const url of urls) {
-			await calculateSizeHTML(url.url, url.name);
+			await calculateRuntimePerformance(url.url, url.name);
 		}
 	}
 	console.log('All audits completed.');
