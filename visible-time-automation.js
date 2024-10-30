@@ -31,7 +31,14 @@ const calculatePaintTimeBackoffice = async (url, name) => {
 		`${name}.txt`
 	);
 	// Launch the browser
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({
+		headless: false,
+		args: [`--window-size=1920,1080`],
+		defaultViewport: {
+			width: 1920,
+			height: 1080,
+		},
+	});
 	const page = await browser.newPage();
 
 	// Start timer
@@ -41,7 +48,7 @@ const calculatePaintTimeBackoffice = async (url, name) => {
 	await page.goto(url);
 
 	// Wait for the content with id="data-row" to be rendered
-	await page.waitForSelector('#data-row', { visible: true });
+	await page.waitForSelector('#data-row', { visible: true, timeout: 5000 });
 
 	// Stop timer
 	const endTime = performance.now();
@@ -65,7 +72,14 @@ const calculatePaintTimePortal = async (url, name) => {
 		`${name}.txt`
 	);
 	// Launch the browser
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({
+		headless: false,
+		args: [`--window-size=1920,1080`],
+		defaultViewport: {
+			width: 1920,
+			height: 1080,
+		},
+	});
 	const page = await browser.newPage();
 
 	// Start timer
@@ -75,7 +89,7 @@ const calculatePaintTimePortal = async (url, name) => {
 	await page.goto(url);
 
 	// Wait for the content with id="data-row" to be rendered
-	await page.waitForSelector('#data-image');
+	await page.waitForSelector('#data-image', { visible: true, timeout: 5000 });
 
 	// Stop timer
 	const endTime = performance.now();
@@ -102,19 +116,17 @@ async function main() {
 		fs.mkdirSync(reportsDir, { recursive: true });
 	}
 
+	
 	for (let i = 0; i < 30; i++) {
-		urls.forEach(async (el) => {
-			if (el.name === 'home-portal') {
-                console.log(`Calculate Time until Visible of Portal Home Page ${i + 1}...`);
-				await calculatePaintTimePortal(el.url, el.name);
-			}
-			if (el.name === 'backoffice-modul') {
-                console.log(`Calculate Time until Visible of Backoffice Page ${i + 1}...`);
-				await calculatePaintTimeBackoffice(el.url, el.name);
-			}
-		});
+		console.log(
+			`Calculate Time until Visible of Backoffice Page: attempt ${i + 1}`
+		);
+		await calculatePaintTimeBackoffice(urls[1].url, urls[1].name);
+		console.log(`Calculate Time until Visible of Portal Home Page: attempt ${i + 1}`);
+		await calculatePaintTimePortal(urls[0].url, urls[0].name);
+
 	}
 	console.log('All audits completed.');
 }
 
-main().catch((err) => console.error(err));
+main();

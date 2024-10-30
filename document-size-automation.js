@@ -24,14 +24,21 @@ const urls = [
 ];
 
 const calculateSizeHTML = async (url, name) => {
-    const reportsDir = path.join(
+	const reportsDir = path.join(
 		__dirname,
 		'reports-document-size',
 		IS_CLIENT === 'true' ? 'client-side' : 'server-side',
-       `${name}.txt`
+		`${name}.txt`
 	);
 	// Launch the browser
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({
+		headless: false,
+		args: [`--window-size=1920,1080`],
+		defaultViewport: {
+			width: 1920,
+			height: 1080,
+		},
+	});
 	const page = await browser.newPage();
 
 	// Navigate to the desired URL
@@ -54,7 +61,7 @@ const calculateSizeHTML = async (url, name) => {
 
 	// Log the document size
 	console.log(`Total Document Size: ${documentSize} bytes`);
-	fs.appendFileSync(reportsDir, documentSize.toString() + "\n", 'utf8');
+	fs.appendFileSync(reportsDir, documentSize.toString() + '\n', 'utf8');
 	// Close the browser
 	await browser.close();
 };
