@@ -13,7 +13,8 @@
 		"automation": "file:",
 		"dotenv": "^16.4.5",
 		"lighthouse": "^12.2.1",
-		"puppeteer": "^23.6.1"
+		"puppeteer": "^23.6.1",
+		"xlsx": "^0.18.5"
 	},
 	"type": "module"
 }
