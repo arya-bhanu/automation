@@ -45,7 +45,6 @@ async function trackPerformance(url, name, id) {
 	if (!fs.existsSync(newDir)) {
 		fs.mkdirSync(newDir, { recursive: true });
 	}
-
 	await page.goto(url);
 	for (let i = 0; i < 30; i++) {
 		await page.tracing.start({
