@@ -32,7 +32,6 @@ async function measureTimeToElement(url, id, name) {
 		IS_CLIENT === 'true' ? 'client-side' : 'server-side',
 		`${name}.txt`
 	);
-
 	const browser = await puppeteer.launch({
 		headless: false,
 		args: [`--window-size=1920,1080`],
@@ -43,32 +42,23 @@ async function measureTimeToElement(url, id, name) {
 	});
 	const page = await browser.newPage();
 	await page.goto(url);
-	// Loop to refresh the page 30 times
 	for (let i = 0; i < 30; i++) {
-		// Perform a hard refresh
 		await page.reload({ waitUntil: ['load'] });
 		const contentStart = Date.now();
 		await page.waitForSelector(`#${id}`, { visible: true });
-		// Wait for the content with id="content" to load
 		const contentVisibleTime = Date.now();
-
 		const timeDifference = contentVisibleTime - contentStart;
-
 		console.log(`Attempt: ${i + 1}`);
 		console.log(
 			`Time between first content and #${id} visible ${timeDifference} ms`
 		);
 		fs.appendFileSync(reportsDir, timeDifference + '\n', 'utf8');
-
-		// Wait for 1000 milliseconds (1 second)
 		await new Promise((resolve) => setTimeout(resolve, 3000));
 	}
 
 	await browser.close();
 }
 
-// Example usage
-// Replace with your target URL
 async function main() {
 	const reportsDir = path.join(
 		__dirname,
