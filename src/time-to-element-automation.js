@@ -16,16 +16,10 @@ const urls = [
 	{
 		name: 'home-portal',
 		url: 'http://localhost:3000/skripsi/home/',
-		id: 'data-image',
-	},
-	{
-		name: 'backoffice-modul',
-		url: 'http://localhost:3000/skripsi/backoffice/',
-		id: 'data-row',
 	},
 ];
 
-async function measureTimeToElement(url, id, name) {
+async function measureTimeToElement(url, name) {
 	const reportsDir = path.join(
 		__dirname,
 		'reports-time-to-element',
@@ -45,7 +39,8 @@ async function measureTimeToElement(url, id, name) {
 	for (let i = 0; i < 30; i++) {
 		await page.reload({ waitUntil: ['load'] });
 		const contentStart = Date.now();
-		await page.waitForSelector(`#${id}`, { visible: true });
+		await page.waitForSelector(`#data-image`, { visible: true });
+		await page.waitForSelector(`#data-image-class`, { visible: true });
 		const contentVisibleTime = Date.now();
 		const timeDifference = contentVisibleTime - contentStart;
 		console.log(`Attempt: ${i + 1}`);
@@ -72,7 +67,7 @@ async function main() {
 
 	// Run measurement
 	for (const url of urls) {
-		await measureTimeToElement(url.url, url.id, url.name);
+		await measureTimeToElement(url.url, url.name);
 	}
 	console.log('All audits completed.');
 }

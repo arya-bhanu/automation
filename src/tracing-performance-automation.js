@@ -16,12 +16,6 @@ const urls = [
 	{
 		name: 'home-portal',
 		url: 'http://localhost:3000/skripsi/home/',
-		id: 'data-image',
-	},
-	{
-		name: 'backoffice-modul',
-		url: 'http://localhost:3000/skripsi/backoffice/',
-		id: 'data-row',
 	},
 ];
 
@@ -31,7 +25,7 @@ const baseDir = path.join(
 	IS_CLIENT === 'true' ? 'client-side' : 'server-side'
 );
 
-async function trackPerformance(url, name, id) {
+async function trackPerformance(url, name) {
 	const browser = await puppeteer.launch({
 		headless: false,
 		args: [`--window-size=1920,1080`],
@@ -52,7 +46,8 @@ async function trackPerformance(url, name, id) {
 			screenshots: true,
 		});
 		await page.reload();
-		await page.waitForSelector(`#${id}`, { visible: true });
+		await page.waitForSelector(`#data-image`, { visible: true });
+		await page.waitForSelector(`#data-image-class`, { visible: true });
 		await page.tracing.stop();
 		await new Promise((resolve) => setTimeout(resolve, 1500));
 	}
@@ -65,7 +60,7 @@ async function main() {
 	}
 
 	for (const url of urls) {
-		await trackPerformance(url.url, url.name, url.id);
+		await trackPerformance(url.url, url.name);
 	}
 	console.log('All audits completed.');
 }
