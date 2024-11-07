@@ -40,7 +40,11 @@ async function measureTimeToElement(url, name) {
 		await page.reload({ waitUntil: ['load'] });
 		const contentStart = Date.now();
 		await page.waitForSelector(`#data-image`, { visible: true });
+		await page.waitForSelector(`#data-image-benefit`, { visible: true });
+		await page.waitForSelector(`#data-image-program`, { visible: true });
 		await page.waitForSelector(`#data-image-class`, { visible: true });
+		await page.waitForSelector(`#data-image-user`, { visible: true });
+		await page.waitForSelector(`#data-image-partners`, { visible: true });
 		const contentVisibleTime = Date.now();
 		const timeDifference = contentVisibleTime - contentStart;
 		console.log(`Attempt: ${i + 1}`);

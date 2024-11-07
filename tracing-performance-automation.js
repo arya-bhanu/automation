@@ -48,7 +48,11 @@ async function trackPerformance(url, name) {
 		});
 		await page.reload();
 		await page.waitForSelector(`#data-image`, { visible: true });
+		await page.waitForSelector(`#data-image-benefit`, { visible: true });
+		await page.waitForSelector(`#data-image-program`, { visible: true });
 		await page.waitForSelector(`#data-image-class`, { visible: true });
+		await page.waitForSelector(`#data-image-user`, { visible: true });
+		await page.waitForSelector(`#data-image-partners`, { visible: true });
 		await page.tracing.stop();
 		await new Promise((resolve) => setTimeout(resolve, 1500));
 	}
