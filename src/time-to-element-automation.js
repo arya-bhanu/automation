@@ -45,7 +45,7 @@ async function measureTimeToElement(url, name) {
 		const timeDifference = contentVisibleTime - contentStart;
 		console.log(`Attempt: ${i + 1}`);
 		console.log(
-			`Time between first content and #${id} visible ${timeDifference} ms`
+			`Time between first content and #data-image also #data-image-class visible ${timeDifference} ms`
 		);
 		fs.appendFileSync(reportsDir, timeDifference + '\n', 'utf8');
 		await new Promise((resolve) => setTimeout(resolve, 3000));

@@ -17,10 +17,6 @@ const urls = [
 		name: 'home-portal',
 		url: 'http://localhost:3000/skripsi/home/',
 	},
-	{
-		name: 'backoffice-modul',
-		url: 'http://localhost:3000/skripsi/backoffice/',
-	},
 ];
 
 const calculateSizeHTML = async (url, name) => {

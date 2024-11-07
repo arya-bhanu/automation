@@ -41,6 +41,7 @@ async function trackPerformance(url, name) {
 	}
 	await page.goto(url);
 	for (let i = 0; i < 30; i++) {
+		console.log('Tracking start peformance attempt: ', i + 1);
 		await page.tracing.start({
 			path: path.join(newDir, `output_${i + 1}_${name}.json`),
 			screenshots: true,
